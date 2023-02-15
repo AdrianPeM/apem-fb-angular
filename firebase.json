@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist",
+    "public": "dist/apem-fb-angular",
     "ignore": [
       "firebase.json",
       "**/.*",
