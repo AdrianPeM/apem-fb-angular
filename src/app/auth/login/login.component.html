@@ -1,0 +1,28 @@
+<div class="flex m-auto h-screen justify-center">
+    <form (ngSubmit)="submit()" class="flex flex-col w-1/3" #loginForm="ngForm">
+        <h1 class="text-xl font-bold text-center">Login</h1>
+        <div class="my-2 w-full">
+            <label for="email">Email</label>
+            <input required autocomplete="no" type="email" name="email" id="email" [(ngModel)]="form.email"
+                class="w-full p-2 rounded border-2 border-solid border-gray-300" placeholder="Email" #email="ngModel">
+        </div>
+        <p *ngIf="email.invalid && email.touched" class="text-red-600">
+            Email invalid
+        </p>
+        <div class="my-2 w-full">
+            <label for="password">Password</label>
+            <input required autocomplete="no" type="password" name="password" id="password" [(ngModel)]="form.password"
+                class="w-full p-2 rounded border-2 border-solid border-gray-300" placeholder="Password"
+                #password="ngModel">
+        </div>
+        <p *ngIf="password.invalid && password.touched" class="text-red-600">
+            Password invalid
+        </p>
+        <div class="my-2 w-full">
+            <button type="submit" [disabled]="loginForm.form.invalid"
+                class="rounded p-2 w-full bg-purple-600 text-white hover:bg-purple-400">
+                Log in
+            </button>
+        </div>
+    </form>
+</div>

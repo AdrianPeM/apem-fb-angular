@@ -1,0 +1,35 @@
+<div class="flex m-auto h-screen justify-center">
+    <form (ngSubmit)="submit()" class="flex flex-col w-1/3" #registerForm="ngForm">
+        <h1 class="text-xl font-bold text-center">Register</h1>
+        <div class="my-2 w-full">
+            <label for="email">Email</label>
+            <input required autocomplete="no" type="email" name="email" id="email" [(ngModel)]="form.email"
+                class="w-full p-2 rounded border-2 border-solid border-gray-300" placeholder="Email" #email="ngModel">
+        </div>
+        <p *ngIf="email.invalid && email.touched" class="text-red-600">
+            Email invalid
+        </p>
+        <div class="my-2 w-full">
+            <label for="password">Password</label>
+            <input required autocomplete="no" type="password" name="password" id="password" [(ngModel)]="form.password"
+                class="w-full p-2 rounded border-2 border-solid border-gray-300" placeholder="Password"
+                #password="ngModel">
+        </div>
+        <p *ngIf="password.invalid && password.touched" class="text-red-600">
+            Password invalid
+        </p>
+        <div class="my-2 w-full">
+            <label for="password">Confirm password</label>
+            <input required autocomplete="no" type="password" name="password_confirm" id="password_confirm"
+                [(ngModel)]="form.password_confirm" class="w-full p-2 rounded border-2 border-solid border-gray-300"
+                placeholder="Confirm password" #password_confirm="ngModel">
+        </div>
+        <p *ngIf="(password_confirm.invalid && password_confirm.touched) || !passwordsMatch" class="text-red-600">
+            Password confirm invalid
+        </p>
+        <div class="my-2 w-full">
+            <button type="submit" [disabled]="registerForm.form.invalid"
+                class="rounded p-2 w-full bg-purple-600 text-white hover:bg-purple-400">Register</button>
+        </div>
+    </form>
+</div>

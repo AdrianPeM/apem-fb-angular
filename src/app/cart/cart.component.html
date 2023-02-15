@@ -1,0 +1,17 @@
+<h1 class="text-xl font-bold">Cart items</h1>
+<!-- <button (click)="printCart()">print cart</button> -->
+<div class="p2" *ngIf="getCart().length > 0">
+    <ul class="flex flex-wrap">
+        <ng-container *ngFor="let book of getCart()">
+            <li
+                class="flex flex-col h-full justify-between items-center text-center m-2 p-4 border-2 rounded-md border-gray-400 border-solid">
+                <img [src]="book.src" [alt]="book.title" width="50" />
+                {{book.title | titlecase}} by {{book.author | titlecase}}
+                <p>{{book.price | currency: 'MXN'}}</p>
+            </li>
+        </ng-container>
+        <!-- <img [src]="book.src" [alt]="book.title" height="30" width="30" />
+        <li class="bold">{{book.title}}</li> -->
+    </ul>
+</div>
+<div class="p2" *ngIf="getCart().length === 0">Cart is empty</div>
