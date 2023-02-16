@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { doc, getDoc, setDoc, Firestore } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore'
 import { SpinnerService } from '../services/spinner.service';
 import { User } from '../types/User';
 
@@ -12,16 +12,15 @@ export class AuthService {
   authenticated: boolean = false;
   user: User = {} as User;
 
-  constructor(private spinnerService: SpinnerService, private router: Router) { }
+  constructor(private spinnerService: SpinnerService, private router: Router, private firestore: Firestore) { }
 
 
   private async getRole(uid: string): Promise<string> {
-    const firestore = getFirestore()
-    const docRef = doc(firestore, `users/${uid}`)
-    const cypheredDoc = await getDoc(docRef)
-    const docData = cypheredDoc.data()
+    const usersDocRef = doc(this.firestore, `users/${uid}`)
+    const usersDoc = await getDoc(usersDocRef)
+    const userData = usersDoc.data()
 
-    return docData ? docData['role'] : ''
+    return userData ? userData['role'] : ''
   }
 
   async setUser(user: any): Promise<void> {
@@ -65,9 +64,8 @@ export class AuthService {
       this.authenticated = true
       this.setUser(user)
 
-      const firestore = getFirestore()
-      const docRef = await doc(firestore, `users/${user.uid}`)
-      setDoc(docRef, { email, role: 'USER' })
+      const usersDocRef = doc(this.firestore, `users/${user.uid}`)
+      setDoc(usersDocRef, { email, role: 'USER' })
 
       this.router.navigate([''])
     } catch (error: any) {

@@ -1,2 +1,16 @@
-<p>users works!</p>
-<button (click)="setAdmin()">Set admin role</button>
+<div class="p-4 flex flex-wrap justify-center">
+    <ng-container *ngFor="let user of users">
+        <div *ngIf="getUser().email !== user.email"
+            class="m-2 p-4 border-2 border-solid border-gray-400 rounded-md grid gap-2 justify-items-center">
+            <p>{{ user.email }}</p>
+            <button class="p-2 w-fit text-purple-800 hover:text-purple-400"
+                *ngIf="getUser().role === 'ADMIN' && user.role !== 'ADMIN'" (click)="setAdmin(user.uid)">
+                Assign admin
+            </button>
+            <button class="p-2 w-fit text-purple-800 hover:text-purple-400"
+                *ngIf="getUser().role === 'ADMIN' && user.role === 'ADMIN'" (click)="revokeAdmin(user.uid)">
+                Revoke admin
+            </button>
+        </div>
+    </ng-container>
+</div>

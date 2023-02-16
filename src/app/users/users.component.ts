@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { doc, getDoc, getFirestore, setDoc } from 'firebase/firestore';
 import { AuthService } from '../auth/auth.service';
+import { User } from '../types/User';
+import { UsersService } from './users.service';
 
 @Component({
   selector: 'app-users',
@@ -9,16 +10,27 @@ import { AuthService } from '../auth/auth.service';
 })
 export class UsersComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  users: Array<User> = [];
+
+  constructor(private authService: AuthService, private userService: UsersService) { }
 
   ngOnInit(): void {
+    this.userService.getUsers().subscribe(users => {
+      this.users = users
+      console.log(users)
+    })
   }
 
-  async setAdmin(): Promise<void> {
-    const firestore = getFirestore()
-    const docRef = doc(firestore, `users/${this.authService.user.uid}`)
-    const response = await setDoc(docRef, { email: this.authService.user.email, role: 'ADMIN' })
-    console.log(response)
+  getUser() {
+    return this.authService.user
+  }
+
+  setAdmin(uid: any): void {
+    this.userService.setAdmin(uid)
+  }
+
+  revokeAdmin(uid: any): void {
+    this.userService.revokeAdmin(uid)
   }
 
 }

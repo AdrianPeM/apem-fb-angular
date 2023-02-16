@@ -1,16 +1,9 @@
 <h1 class="text-xl bold">Books</h1>
 
-<!-- <button (click)="toggleTitle()">
-    <ng-container *ngIf="showContent">Hide Content</ng-container>
-    <ng-container *ngIf="!showContent">Show Content</ng-container>
-</button> -->
-
 <ng-container *ngIf="showContent">
-
     <ul class="flex flex-wrap w-full justify-center">
         <ng-container *ngFor="let book of books">
-            <app-book [book]="book"></app-book>
+            <app-book class="m-2" [book]="book"></app-book>
         </ng-container>
     </ul>
-
 </ng-container>
