@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { AuthService } from './auth/auth.service';
 import { firebaseConfig } from './firebase.config';
 
@@ -17,6 +18,15 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     initializeApp(firebaseConfig);
+    const auth = getAuth()
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        this.authService.authenticated = true
+        this.authService.setUser(user).then(() => {
+          console.log('App component set user', this.authService.user)
+        })
+      }
+    })
   }
 
   isAuthenticated = (): boolean => {

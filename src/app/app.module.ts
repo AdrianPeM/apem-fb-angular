@@ -7,12 +7,14 @@ import { CartComponent } from './cart/cart.component';
 import { BooksModule } from './books/books.module';
 import { AuthModule } from './auth/auth.module';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { UsersComponent } from './users/users.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CartComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    UsersComponent
   ],
   imports: [
     BrowserModule,
