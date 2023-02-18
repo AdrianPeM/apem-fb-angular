@@ -11,9 +11,9 @@ import { User } from '../types/User';
 export class AuthService {
   authenticated: boolean = false;
   user: User = {} as User;
+  auth = getAuth()
 
   constructor(private spinnerService: SpinnerService, private router: Router, private firestore: Firestore) { }
-
 
   private async getRole(uid: string): Promise<string> {
     const usersDocRef = doc(this.firestore, `users/${uid}`)
@@ -34,10 +34,9 @@ export class AuthService {
 
   async login(email: string, password: string): Promise<void> {
     this.spinnerService.startLoading()
-    const auth = getAuth();
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password)
       const { user } = userCredential
       console.log(user)
       this.authenticated = true
@@ -58,8 +57,7 @@ export class AuthService {
     this.spinnerService.startLoading()
 
     try {
-      const auth = getAuth()
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      const userCredential = await createUserWithEmailAndPassword(this.auth, email, password)
       const { user } = userCredential
       this.authenticated = true
       this.setUser(user)
@@ -80,10 +78,9 @@ export class AuthService {
   }
 
   async logout(): Promise<void> {
-    const auth = getAuth();
     this.spinnerService.startLoading()
     try {
-      signOut(auth)
+      signOut(this.auth)
       this.authenticated = false
       this.resetUser()
       this.router.navigate(['login'])

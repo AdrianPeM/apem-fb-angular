@@ -12,13 +12,15 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideDatabase, getDatabase } from '@angular/fire/database';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { LoadingAppComponent } from './components/loading-app/loading-app.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CartComponent,
     SpinnerComponent,
-    UsersComponent
+    UsersComponent,
+    LoadingAppComponent
   ],
   imports: [
     BrowserModule,

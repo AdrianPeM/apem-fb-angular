@@ -6,7 +6,7 @@
             <input required autocomplete="no" type="email" name="email" id="email" [(ngModel)]="form.email"
                 class="w-full p-2 rounded border-2 border-solid border-gray-300" placeholder="Email" #email="ngModel">
         </div>
-        <p *ngIf="email.invalid && email.touched" class="text-red-600">
+        <p [hidden]="email.valid || email.pristine" class="text-red-600">
             Email invalid
         </p>
         <div class="my-2 w-full">
@@ -15,7 +15,7 @@
                 class="w-full p-2 rounded border-2 border-solid border-gray-300" placeholder="Password"
                 #password="ngModel">
         </div>
-        <p *ngIf="password.invalid && password.touched" class="text-red-600">
+        <p [hidden]="password.valid || password.pristine" class="text-red-600">
             Password invalid
         </p>
         <div class="my-2 w-full">
@@ -24,7 +24,7 @@
                 [(ngModel)]="form.password_confirm" class="w-full p-2 rounded border-2 border-solid border-gray-300"
                 placeholder="Confirm password" #password_confirm="ngModel">
         </div>
-        <p *ngIf="(password_confirm.invalid && password_confirm.touched) || !passwordsMatch" class="text-red-600">
+        <p [hidden]="(password_confirm.valid || password_confirm.pristine) || !passwordsMatch" class="text-red-600">
             Password confirm invalid
         </p>
         <div class="my-2 w-full">

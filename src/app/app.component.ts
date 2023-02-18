@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { AuthService } from './auth/auth.service';
+import { LoadingAppService } from './services/loading-app.service';
 
 @Component({
   selector: 'app-root',
@@ -12,9 +14,10 @@ export class AppComponent implements OnInit {
 
   title = 'apem-fb-angular';
 
-  constructor(private authService: AuthService) { }
+  constructor(private router: Router, private authService: AuthService, private loadingAppService: LoadingAppService) { }
 
   ngOnInit(): void {
+    this.loadingAppService.startLoading()
     const auth = getAuth()
     onAuthStateChanged(auth, user => {
       if (user) {
@@ -22,7 +25,9 @@ export class AppComponent implements OnInit {
         this.authService.setUser(user).then(() => {
           console.log('App component set user', this.authService.user)
         })
+        this.router.navigate(['/'])
       }
+      this.loadingAppService.stopLoading()
     })
   }
 
