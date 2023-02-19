@@ -1,0 +1,14 @@
+<!-- <div class="grid p-2 h-full items-center gap-2 border-2 rounded-md border-gray-300"> -->
+<div class="flex flex-col justify-between p-2 h-full gap-2 border-2 rounded-md border-gray-300">
+    <p class="py-1 font-bold">{{auction.title}}</p>
+    <p class="py-1 text-sm">{{auction.description}}</p>
+    <p class="py-1 text-sm font-bold">{{auction.startPrice | currency: 'MXN'}}</p>
+    <button *ngIf="getUserRole() === 'ADMIN'" (click)="editAuction(auction)"
+        class="p-2 border-2 rounded-md border-purple-300 hover:bg-purple-300">Editar</button>
+    <div *ngIf="getUserRole() !== 'ADMIN'" class="grid gap-1 p-2 grid-cols-2">
+        <button (click)="openDetails(auction)"
+            class="p-2 border-2 rounded-md border-purple-300 hover:bg-purple-300">Detalles</button>
+        <button (click)="bid(auction)"
+            class="p-2 border-2 rounded-md text-white border-purple-600 bg-purple-600 hover:border-purple-300 hover:bg-purple-300 ">Ofertar</button>
+    </div>
+</div>

@@ -1,9 +1,11 @@
 <app-loading-app></app-loading-app>
 <app-spinner></app-spinner>
+<app-alert></app-alert>
 <nav class="w-100 flex justify-between p-4 bg-purple-400 text-white text-xl font-bold">
     <div>
         <a class="mx-2 hover:text-blue-400" routerLink="/">Home</a>
-        <ng-container *ngIf="isAuthenticated()">
+        <a class="mx-2 hover:text-blue-400" routerLink="/books">Books</a>
+        <ng-container *ngIf="isAuthenticated() && getUserRole() === 'ADMIN'">
             <a class="mx-2 hover:text-blue-400" routerLink="/users">Users</a>
         </ng-container>
     </div>

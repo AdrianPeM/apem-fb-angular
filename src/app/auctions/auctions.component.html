@@ -1,0 +1,10 @@
+<button *ngIf="getUserRole() === 'ADMIN'"
+    class="my-2 p-2 rounded-md border-2 border-solid border-purple-300 hover:bg-purple-300" (click)="newAuction()">
+    Crear subasta
+</button>
+<p class="text-xl font-bold">Subastas</p>
+<div class="grid gap-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-1">
+    <ng-container *ngFor="let auction of auctions">
+        <app-auction [auction]="auction"></app-auction>
+    </ng-container>
+</div>

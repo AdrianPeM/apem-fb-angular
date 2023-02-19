@@ -13,6 +13,10 @@ import { environment } from '../environments/environment';
 import { provideDatabase, getDatabase } from '@angular/fire/database';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { LoadingAppComponent } from './components/loading-app/loading-app.component';
+import { AuctionComponent } from './auction/auction.component';
+import { AuctionsComponent } from './auctions/auctions.component';
+import { AlertComponent } from './components/alert/alert.component';
+import { AuctionModule } from './auction/auction.module';
 
 @NgModule({
   declarations: [
@@ -20,13 +24,17 @@ import { LoadingAppComponent } from './components/loading-app/loading-app.compon
     CartComponent,
     SpinnerComponent,
     UsersComponent,
-    LoadingAppComponent
+    LoadingAppComponent,
+    AuctionComponent,
+    AuctionsComponent,
+    AlertComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BooksModule,
     AuthModule,
+    AuctionModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideDatabase(() => getDatabase()),
     provideFirestore(() => getFirestore())

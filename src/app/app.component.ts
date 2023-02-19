@@ -27,12 +27,18 @@ export class AppComponent implements OnInit {
         })
         this.router.navigate(['/'])
       }
-      this.loadingAppService.stopLoading()
+      setTimeout(() => {
+        this.loadingAppService.stopLoading()
+      }, 600);
     })
   }
 
   isAuthenticated = (): boolean => {
     return this.authService.authenticated
+  }
+
+  getUserRole = (): string | null => {
+    return this.authService.user.role
   }
 
   logout(): void {
