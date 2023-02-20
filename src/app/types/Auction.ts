@@ -1,7 +1,8 @@
 export interface Auction {
-    uid?: string,
+    uid: string,
     title: string,
     description: string,
     startPrice: number,
     increasePrice: number,
+    dueDate: string
 }

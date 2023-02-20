@@ -25,7 +25,7 @@ export class AuctionFormComponent implements OnInit {
   }
 
   deleteAuction(): void {
-    console.log('delete auction ', this.auction)
+    this.auctionsService.deleteAuction(this.auction.uid)
   }
 
 }

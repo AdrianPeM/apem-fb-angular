@@ -1,4 +1,5 @@
 <div class="flex flex-col items-center">
+    <a class="self-start text-lg text-purple-500 font-bold" routerLink="/">Regresar</a>
     <p class="text-xl font-bold">
         <ng-container *ngIf="auction.uid">Actualizar subasta</ng-container>
         <ng-container *ngIf="!auction.uid">Crear subasta</ng-container>
@@ -16,7 +17,11 @@
             [(ngModel)]="auction.description" #description="ngModel" placeholder="Descripción de la subasta">
             ></textarea>
 
-        <label for="title">Comenzar la subasta en: </label>
+        <label for="title">Cuando termina la subasta</label>
+        <input required type="datetime-local" id="dueDate" name="dueDate" [(ngModel)]="auction.dueDate"
+            #dueDate="ngModel">
+
+        <label for="title">Comenzar la subasta en </label>
         <input required type="number" name="startPrice" id="startPrice"
             class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400"
             [(ngModel)]="auction.startPrice" #startPrice="ngModel" placeholder="Precio inicial">
@@ -30,7 +35,7 @@
             <button type="submit" [disabled]="auctionForm.form.invalid"
                 class="rounded p-2 w-fit bg-purple-600 text-white hover:bg-purple-400 disabled:pointer-events-none disabled:opacity-60">
                 <ng-container *ngIf="auction.uid">
-                    Guardar subasta
+                    Guardar cambios
                 </ng-container>
                 <ng-container *ngIf="!auction.uid">
                     Crear subasta

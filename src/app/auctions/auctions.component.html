@@ -3,8 +3,8 @@
     Crear subasta
 </button>
 <p class="text-xl font-bold">Subastas</p>
-<div class="grid gap-4 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-1">
+<div class="grid gap-4 xl:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
     <ng-container *ngFor="let auction of auctions">
-        <app-auction [auction]="auction"></app-auction>
+        <app-auction-card [auction]="auction"></app-auction-card>
     </ng-container>
 </div>

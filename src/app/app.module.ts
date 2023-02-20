@@ -13,10 +13,10 @@ import { environment } from '../environments/environment';
 import { provideDatabase, getDatabase } from '@angular/fire/database';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { LoadingAppComponent } from './components/loading-app/loading-app.component';
-import { AuctionComponent } from './auction/auction.component';
+import { AuctionCardComponent } from './auction-card/auction-card.component';
 import { AuctionsComponent } from './auctions/auctions.component';
 import { AlertComponent } from './components/alert/alert.component';
-import { AuctionModule } from './auction/auction.module';
+import { AuctionModule } from './auctions/auctions.module';
 
 @NgModule({
   declarations: [
@@ -25,7 +25,7 @@ import { AuctionModule } from './auction/auction.module';
     SpinnerComponent,
     UsersComponent,
     LoadingAppComponent,
-    AuctionComponent,
+    AuctionCardComponent,
     AuctionsComponent,
     AlertComponent
   ],
