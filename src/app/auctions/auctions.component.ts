@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { collection, Firestore, getDocs } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { AlertService } from '../services/alert.service';
 import { Auction } from '../types/Auction';
@@ -10,16 +12,36 @@ import { AuctionsService } from './auctions.service';
   templateUrl: './auctions.component.html',
   styleUrls: ['./auctions.component.scss']
 })
-export class AuctionsComponent implements OnInit {
+
+export class AuctionsComponent implements OnInit, OnDestroy {
+  suscription: Subscription = new Subscription()
 
   auctions: Array<Auction> = []
 
-  constructor(private router: Router, private auctionsService: AuctionsService, private authService: AuthService, private alertService: AlertService) { }
+  constructor(
+    private firestore: Firestore,
+    private router: Router,
+    private auctionsService: AuctionsService,
+    private authService: AuthService,
+    private alertService: AlertService
+  ) { }
 
   ngOnInit(): void {
-    this.auctionsService.getAuctions().subscribe(auctions => {
-      this.auctions = auctions
-    })
+    // const auctionsRef = collection(this.firestore, 'auctions')
+    // getDocs(auctionsRef).then(snapshot => {
+    //   const newAuctions: Array<Auction> = []
+    //   snapshot.forEach(doc => {
+    //     newAuctions.push({ ...doc.data(), uid: doc.id } as Auction)
+    //   })
+    //   this.auctions = newAuctions
+    // })
+    this.suscription = this.auctionsService
+      .getAuctions()
+      .subscribe(auctions => { if (auctions.length !== this.auctions.length) this.auctions = auctions })
+  }
+
+  ngOnDestroy(): void {
+    this.suscription.unsubscribe()
   }
 
   getUserRole(): string | null {

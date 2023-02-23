@@ -1,54 +1,49 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { doc, Firestore, onSnapshot } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { AuctionsService } from '../auctions/auctions.service';
 import { AuthService } from '../auth/auth.service';
 import { Auction } from '../types/Auction';
-
-const MS_DAYS = 8.64e7, MS_HOURS = 3.6e6, MS_MINUTES = 6e4, MS_SECONDS = 1e3
-
-const divmod = (n: number, m: number) => [Math.trunc(n / m), n % m]
-
-const dhms = (durationMs: number): string => {
-  const [days, daysMs] = divmod(durationMs, MS_DAYS)
-  const [hours, hoursMs] = divmod(daysMs, MS_HOURS)
-  const [minutes, minutesMs] = divmod(hoursMs, MS_MINUTES)
-  const seconds = minutesMs / MS_SECONDS
-  return `${String(days).padStart(2, '0')}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(Math.floor(seconds)).padStart(2, '0')}`
-}
-
 
 @Component({
   selector: 'app-auction-card',
   templateUrl: './auction-card.component.html',
   styleUrls: ['./auction-card.component.scss']
 })
-export class AuctionCardComponent implements OnInit {
+
+export class AuctionCardComponent implements OnInit, OnDestroy {
   @Input() auction: Auction = {} as Auction
 
-  remainingTime: string = ''
-  isActive: boolean = false
-  now: any = ''
+  private unsubscribe: any
 
-  constructor(private router: Router, private authService: AuthService, private auctionsService: AuctionsService) { }
+  remainingTime: number = 0
+  isActive: boolean = false
+
+  constructor(private firestore: Firestore, private router: Router, private authService: AuthService, private auctionsService: AuctionsService) { }
 
   ngOnInit(): void {
-    if (history.state.auction) this.auction = history.state.auction
+    this.unsubscribe = onSnapshot(doc(this.firestore, 'auctions', this.auction.uid), doc => {
+      const newAuction = { ...doc.data(), uid: doc.id } as Auction
+      this.auction = newAuction
+      if (new Date(this.auction.dueDate).getTime() <= Date.now()) return
+      this.startCountDown()
+    })
+  }
 
-    if (new Date(this.auction.dueDate).getTime() <= Date.now()) return
-    this.startCountDown()
+  ngOnDestroy(): void {
+    this.unsubscribe()
   }
 
   startCountDown(): void {
     this.isActive = true
     const countDown = setInterval(() => {
       const timeLeft = new Date(this.auction.dueDate).getTime() - Date.now()
-      this.now = timeLeft
       if (timeLeft < 0) {
         clearInterval(countDown);
-        this.remainingTime = ''
-        this.isActive = true
+        this.remainingTime = 0
+        this.isActive = false
       } else {
-        this.remainingTime = dhms(timeLeft)
+        this.remainingTime = timeLeft
       }
     }, 1000)
   }
@@ -65,16 +60,21 @@ export class AuctionCardComponent implements OnInit {
     this.auctionsService.createAuction(auction)
   }
 
-  editAuction(auction: Auction): void {
-    this.router.navigate(['/auction'], { state: { auction } })
+  editAuction(): void {
+    this.router.navigate(['/auction'], { state: { auction: this.auction } })
   }
 
-  openDetails(auction: Auction): void {
-    console.log('Open auction details for : ', auction)
+  openDetails(): void {
+    console.log('Open auction details for : ', this.auction)
+    this.router.navigate([`auction_details/${this.auction.uid}`])
   }
 
-  bid(auction: Auction): void {
-    this.auctionsService.bid(auction)
+  bid(): void {
+    if (!this.authService.user.email) {
+      this.router.navigate(['login'])
+      return
+    }
+    this.auctionsService.bid(this.auction)
   }
 
 }

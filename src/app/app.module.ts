@@ -17,6 +17,8 @@ import { AuctionCardComponent } from './auction-card/auction-card.component';
 import { AuctionsComponent } from './auctions/auctions.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { AuctionModule } from './auctions/auctions.module';
+import { AuctionDetailsComponent } from './auction-details/auction-details.component';
+import { TimeDHMSPipe } from './time-dhms.pipe';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { AuctionModule } from './auctions/auctions.module';
     LoadingAppComponent,
     AuctionCardComponent,
     AuctionsComponent,
-    AlertComponent
+    AlertComponent,
+    AuctionDetailsComponent,
+    TimeDHMSPipe
   ],
   imports: [
     BrowserModule,

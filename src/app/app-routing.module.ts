@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuctionDetailsComponent } from './auction-details/auction-details.component';
 import { AuctionFormComponent } from './auction-form/auction-form.component';
 import { AuctionsComponent } from './auctions/auctions.component';
 import { AdminGuard } from './auth/guards/admin.guard';
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent, canActivate: [AuthenticatedGuard] },
   { path: 'books', component: BooksComponent },
   { path: 'auction', component: AuctionFormComponent, canActivate: [AdminGuard] },
+  { path: 'auction_details/:id', component: AuctionDetailsComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

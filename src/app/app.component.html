@@ -8,6 +8,9 @@
         <ng-container *ngIf="isAuthenticated() && getUserRole() === 'ADMIN'">
             <a class="mx-2 hover:text-blue-400" routerLink="/users">Users</a>
         </ng-container>
+        <ng-container *ngIf="isAuthenticated()">
+            <a class="mx-2 hover:text-blue-400" routerLink="/auction_details/1">Auction details</a>
+        </ng-container>
     </div>
     <div>
         <a class="mx-2 hover:text-blue-400" routerLink="/cart">My cart</a>
