@@ -17,4 +17,8 @@ export class SpinnerComponent implements OnInit {
     return this.spinnerService.loading
   }
 
+  getMsg(): string | null {
+    return this.spinnerService.msg
+  }
+
 }

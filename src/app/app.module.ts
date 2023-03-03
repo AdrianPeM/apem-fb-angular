@@ -19,6 +19,13 @@ import { AlertComponent } from './components/alert/alert.component';
 import { AuctionModule } from './auctions/auctions.module';
 import { AuctionDetailsComponent } from './auction-details/auction-details.component';
 import { TimeDHMSPipe } from './time-dhms.pipe';
+import { provideStorage, getStorage } from '@angular/fire/storage';
+import { ArticleFormComponent } from './article-form/article-form.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgMaterialModule } from './ng-material/ng-material.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 
 @NgModule({
   declarations: [
@@ -31,17 +38,22 @@ import { TimeDHMSPipe } from './time-dhms.pipe';
     AuctionsComponent,
     AlertComponent,
     AuctionDetailsComponent,
-    TimeDHMSPipe
+    TimeDHMSPipe,
+    ArticleFormComponent
   ],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
     BooksModule,
     AuthModule,
     AuctionModule,
+    ReactiveFormsModule,
+    NgMaterialModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideDatabase(() => getDatabase()),
-    provideFirestore(() => getFirestore())
+    provideFirestore(() => getFirestore()),
+    provideStorage(() => getStorage())
   ],
   providers: [],
   bootstrap: [AppComponent]

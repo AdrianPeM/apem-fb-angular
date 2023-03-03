@@ -5,16 +5,18 @@ import { Injectable } from '@angular/core';
 })
 
 export class SpinnerService {
-
-  loading: boolean = false;
+  msg: string | null = null
+  loading: boolean = false
 
   constructor() { }
 
-  startLoading(): void {
+  startLoading(msg: string | null = null): void {
+    this.msg = msg
     this.loading = true
   }
 
   stopLoading(): void {
+    this.msg = null
     this.loading = false
   }
 }

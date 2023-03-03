@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, CollectionReference, deleteDoc, deleteField, doc, DocumentData, Firestore, setDoc, updateDoc } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, CollectionReference, deleteDoc, doc, DocumentData, Firestore, updateDoc } from '@angular/fire/firestore';
 import { Auction } from '../types/Auction';
 import { Observable } from 'rxjs'
 import { SpinnerService } from '../services/spinner.service';
 import { Router } from '@angular/router';
 import { AlertService } from '../services/alert.service';
 import { AuthService } from '../auth/auth.service';
+import { Article } from '../types/Article';
 
 @Injectable({
   providedIn: 'root'
@@ -28,24 +29,27 @@ export class AuctionsService {
     return collectionData(auctionsRef, { idField: 'uid' }) as Observable<Auction[]>
   }
 
-  async createAuction(auction: Auction): Promise<void> {
+  async createAuction(auction: Auction): Promise<string> {
     this.spinnerService.startLoading()
+    let uid = ''
     try {
-      const { title, dueDate, description, startPrice, increasePrice } = auction
-      await addDoc(this.auctionCollection, { title, dueDate, description, startPrice, increasePrice })
-      this.router.navigate(['/'])
+      const { title, dueDate, description, startPrice, increasePrice, articles } = auction
+      const result = await addDoc(this.auctionCollection, { title, dueDate, description, startPrice, increasePrice, articles })
+      uid = result.id
+      // this.router.navigate(['/'])
     } catch (error: any) {
       this.alertService.showAlert(`${error.code} - ${error.message}`)
     }
     this.spinnerService.stopLoading()
+    return uid
   }
 
   async updateAuction(auction: Auction): Promise<void> {
     this.spinnerService.startLoading()
     try {
-      const { title, dueDate, description, startPrice, increasePrice } = auction
+      const { title, dueDate, description, startPrice, increasePrice, articles } = auction
       const auctionsDocRef = doc(this.firestore, 'auctions', auction.uid)
-      await updateDoc(auctionsDocRef, { title, dueDate, description, startPrice, increasePrice })
+      await updateDoc(auctionsDocRef, { title, dueDate, description, startPrice, increasePrice, articles })
       this.router.navigate(['/'])
     } catch (error: any) {
       this.alertService.showAlert(`${error.code} - ${error.message}`)
@@ -81,4 +85,18 @@ export class AuctionsService {
     }
     this.spinnerService.stopLoading()
   }
+
+  async updateArticles(uid: string, articles: Article[]): Promise<void> {
+    this.spinnerService.startLoading('Guardando artículo')
+    try {
+      const auctionsDocRef = doc(this.firestore, 'auctions', uid)
+      await updateDoc(auctionsDocRef, {
+        articles
+      })
+    } catch (error: any) {
+      this.alertService.showAlert(`${error.code} - ${error.message}`)
+    }
+    this.spinnerService.stopLoading()
+  }
+
 }

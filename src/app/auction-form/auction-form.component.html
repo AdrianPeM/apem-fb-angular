@@ -1,47 +1,85 @@
 <div class="flex flex-col items-center">
     <a class="self-start text-lg text-purple-500 font-bold" routerLink="/">Regresar</a>
     <p class="text-xl font-bold">
-        <ng-container *ngIf="auction.uid">Actualizar subasta</ng-container>
-        <ng-container *ngIf="!auction.uid">Crear subasta</ng-container>
+        <ng-container *ngIf="auctionForm.value.uid">Actualizar subasta</ng-container>
+        <ng-container *ngIf="!auctionForm.value.uid">Crear subasta</ng-container>
     </p>
-    <form class="grid gap-2 w-full max-w-lg" (ngSubmit)="saveAuction(auctionForm.value)" #auctionForm="ngForm">
-        <input type="hidden" name="uid" [(ngModel)]="auction.uid">
-        <label for=" title">Título de la subasta</label>
+
+    <!-- <input multiple type="file" name="files" id="files" (change)="uploadImages($event)"
+        accept=".jpg, .jpeg, .gif, .png, .apng, .svg, .bmp, .png"> -->
+
+    <!-- <p>Preview images</p>
+    <div class="flex flex-wrap gap-2">
+        <ng-container *ngFor="let imagePrev of previews | keyvalue">
+            <img class="object-contain" [src]="imagePrev.value.preview" alt="Could not load" width="100" height="100">
+            <p>{{imagePrev.key}} -> {{imagePrev.value.progress}}</p>
+        </ng-container>
+    </div> -->
+
+    <!-- <div class="flex flex-wrap gap-2" *ngIf="imagesLinks.length">
+        <ng-container *ngFor="let imageLink of imagesLinks">
+            <img class="object-contain" [src]="imageLink" alt="Could not load" width="100" height="100">
+        </ng-container>
+    </div> -->
+
+    <form class="grid gap-2 w-full max-w-lg" (ngSubmit)="saveAuctionForm()" [formGroup]="auctionForm">
+        <!-- <input type="hidden" name="uid" formControlName="uid"> -->
+        <label for="title">Título de la subasta</label>
         <input required type="text" name="title" id="title"
-            class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400" [(ngModel)]="auction.title"
-            #title="ngModel" placeholder="Título de la subasta">
+            class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400" formControlName="title"
+            placeholder="Título de la subasta">
 
         <label for="title">Descripción de la subasta</label>
         <textarea required name="description" id="description" rows="4"
             class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400 resize-none"
-            [(ngModel)]="auction.description" #description="ngModel" placeholder="Descripción de la subasta">
-            ></textarea>
+            formControlName="description" placeholder="Descripción de la subasta"></textarea>
 
         <label for="title">Cuando termina la subasta</label>
-        <input required type="datetime-local" id="dueDate" name="dueDate" [(ngModel)]="auction.dueDate"
-            #dueDate="ngModel">
+        <input required type="datetime-local" id="dueDate" name="dueDate" formControlName="dueDate">
 
         <label for="title">Comenzar la subasta en </label>
         <input required type="number" name="startPrice" id="startPrice"
-            class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400"
-            [(ngModel)]="auction.startPrice" #startPrice="ngModel" placeholder="Precio inicial">
+            class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400" formControlName="startPrice"
+            placeholder="Precio inicial">
 
         <label for="title">Incremento de la puja:</label>
         <input required type="number" name="increasePrice" id="increasePrice"
             class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400"
-            [(ngModel)]="auction.increasePrice" #increasePrice="ngModel" placeholder="Incremento por puja">
+            formControlName="increasePrice" placeholder="Incremento por puja">
+
+
+        <button type="button" (click)="openArticleDialog()"
+            class="w-fit p-2 border-2 rounded-md text-white border-purple-600 bg-purple-600 hover:border-purple-300 hover:bg-purple-300 ">
+            Agregar artículo
+        </button>
+
+        <div class="grid gap-1" *ngIf="articles.length">
+            <p>Artículos</p>
+            <div class="grid gap-1 grid-cols-2">
+                <button (click)="openArticleDialog(article, i)"
+                    class="p-2 rounded-md shadow-gray-400 shadow-sm hover:bg-gray-300 text-ellipsis overflow-hidden"
+                    *ngFor="let article of articles; let i = index" type="button">
+                    {{article.name}}
+                </button>
+            </div>
+        </div>
+
+        <!-- <button type="button" (click)="updateArticles()" *ngIf="auctionForm.get('uid')?.value"
+            class="w-fit p-2 border-2 rounded-md text-white border-purple-600 bg-purple-600 hover:border-purple-300 hover:bg-purple-300 ">
+            Save articles
+        </button> -->
 
         <div class="pt-2 grid grid-flow-col gap-3 justify-start">
-            <button type="submit" [disabled]="auctionForm.form.invalid"
+            <button type="submit" [disabled]="auctionForm.invalid"
                 class="rounded p-2 w-fit bg-purple-600 text-white hover:bg-purple-400 disabled:pointer-events-none disabled:opacity-60">
-                <ng-container *ngIf="auction.uid">
+                <ng-container *ngIf="auctionForm.get('uid')?.value">
                     Guardar cambios
                 </ng-container>
-                <ng-container *ngIf="!auction.uid">
+                <ng-container *ngIf="!auctionForm.get('uid')?.value">
                     Crear subasta
                 </ng-container>
             </button>
-            <button type="button" (click)="deleteAuction()" *ngIf="auction.uid"
+            <button type="button" (click)="deleteAuction()" *ngIf="auctionForm.get('uid')?.value"
                 class="rounded p-2 w-fit bg-red-600 text-white hover:bg-red-400 disabled:pointer-events-none disabled:opacity-60">
                 Eliminar subasta
             </button>
