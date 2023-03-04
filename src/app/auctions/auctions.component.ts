@@ -27,17 +27,9 @@ export class AuctionsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    // const auctionsRef = collection(this.firestore, 'auctions')
-    // getDocs(auctionsRef).then(snapshot => {
-    //   const newAuctions: Array<Auction> = []
-    //   snapshot.forEach(doc => {
-    //     newAuctions.push({ ...doc.data(), uid: doc.id } as Auction)
-    //   })
-    //   this.auctions = newAuctions
-    // })
     this.suscription = this.auctionsService
       .getAuctions()
-      .subscribe(auctions => { if (auctions.length !== this.auctions.length) this.auctions = auctions })
+      .subscribe(auctions => { /*if (auctions.length !== this.auctions.length) */this.auctions = auctions })
   }
 
   ngOnDestroy(): void {

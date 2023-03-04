@@ -1,5 +1,6 @@
 export interface Article {
     name: string,
-    images: string[],
-    files: FileList | null
+    images: any[],
+    files: FileList | null,
+    dueDate: any
 }

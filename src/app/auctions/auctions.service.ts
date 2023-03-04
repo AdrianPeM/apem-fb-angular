@@ -34,9 +34,17 @@ export class AuctionsService {
     let uid = ''
     try {
       const { title, dueDate, description, startPrice, increasePrice, articles } = auction
-      const result = await addDoc(this.auctionCollection, { title, dueDate, description, startPrice, increasePrice, articles })
+      const result = await addDoc(this.auctionCollection, {
+        title,
+        dueDate,
+        description,
+        startPrice,
+        increasePrice,
+        articles,
+        auctionItem: null
+      })
+
       uid = result.id
-      // this.router.navigate(['/'])
     } catch (error: any) {
       this.alertService.showAlert(`${error.code} - ${error.message}`)
     }
@@ -92,6 +100,19 @@ export class AuctionsService {
       const auctionsDocRef = doc(this.firestore, 'auctions', uid)
       await updateDoc(auctionsDocRef, {
         articles
+      })
+    } catch (error: any) {
+      this.alertService.showAlert(`${error.code} - ${error.message}`)
+    }
+    this.spinnerService.stopLoading()
+  }
+
+  async setAuctionItem(uid: string, article: Article | null): Promise<void> {
+    this.spinnerService.startLoading('Guardando artículo')
+    try {
+      const auctionsDocRef = doc(this.firestore, 'auctions', uid)
+      await updateDoc(auctionsDocRef, {
+        auctionItem: article
       })
     } catch (error: any) {
       this.alertService.showAlert(`${error.code} - ${error.message}`)

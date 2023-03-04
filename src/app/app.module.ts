@@ -17,7 +17,7 @@ import { AuctionCardComponent } from './auction-card/auction-card.component';
 import { AuctionsComponent } from './auctions/auctions.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { AuctionModule } from './auctions/auctions.module';
-import { AuctionDetailsComponent } from './auction-details/auction-details.component';
+import { AuctionDetailsComponent, SelectArticleDialog } from './auction-details/auction-details.component';
 import { TimeDHMSPipe } from './time-dhms.pipe';
 import { provideStorage, getStorage } from '@angular/fire/storage';
 import { ArticleFormComponent } from './article-form/article-form.component';
@@ -39,7 +39,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     AlertComponent,
     AuctionDetailsComponent,
     TimeDHMSPipe,
-    ArticleFormComponent
+    ArticleFormComponent,
+    SelectArticleDialog
   ],
   imports: [
     BrowserAnimationsModule,

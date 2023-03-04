@@ -3,18 +3,33 @@
     <p class="py-1 font-bold">{{auction.title}}</p>
     <p class="py-1 text-sm">{{auction.description}}</p>
     <p class="py-1 text-sm font-bold">{{auction.startPrice | currency: 'MXN'}}</p>
-    <!-- <p class="py-1 text-sm font-bold" *ngIf="isActive">Termina en {{remainingTime}}</p> -->
-    <p class="py-1 text-red-800 text-sm font-bold" *ngIf="!isActive">Subasta no disponible</p>
-    <!-- <p>{{now | date:'dd:hh:mm:ss'}}</p>
-            <p>{{60000 | date:'dd:hh:mm:ss'}}</p> -->
     <button *ngIf="getUser().role === 'ADMIN'" (click)="editAuction()"
         class="p-2 border-2 rounded-md border-purple-300 hover:bg-purple-300">Editar</button>
-    <!-- <div *ngIf="getUserRole() !== 'ADMIN' && isActive" class="grid gap-1 p-2 grid-cols-2"> -->
-    <!-- <button (click)="openDetails()"
-        class="p-2 border-2 rounded-md border-purple-300 hover:bg-purple-300">Detalles</button> -->
-    <button *ngIf="getUser().role !== 'ADMIN' && isActive" (click)="bid()"
+    <ng-container *ngIf="auction.auctionItem">
+        Vista previa del artículo
+        <div class="flex flex-wrap gap-2">
+            <ng-container *ngFor="let img of auction.auctionItem.images | keyvalue">
+                <div class="flex relative h-fit">
+                    <img class="object-contain" [src]="img.value.src" alt="Could not load" width="100" height="100">
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="auction.articles?.length">
+        <p>Artículos</p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-1">
+            <div class="p-2 rounded-md shadow-gray-400 shadow-sm hover:bg-gray-300 text-ellipsis overflow-hidden cursor-pointer"
+                *ngFor="let article of auction.articles; let i = index" (click)="openSelectArticle(article)">
+                {{article.name}}
+            </div>
+        </div>
+    </ng-container>
+    <button (click)="showServerTimestamp()"
+        class="p-2 border-2 rounded-md text-white border-purple-600 bg-purple-600 hover:border-purple-300 hover:bg-purple-300 ">
+        Get servertimestamp
+    </button>
+    <!-- <button *ngIf="getUser().role !== 'ADMIN' && isActive" (click)="bid()"
         class="p-2 border-2 rounded-md text-white border-purple-600 bg-purple-600 hover:border-purple-300 hover:bg-purple-300 ">
         Ofertar: {{auction.increasePrice | currency: 'MXN'}}
-    </button>
-    <!-- </div> -->
+    </button> -->
 </div>

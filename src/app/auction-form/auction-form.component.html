@@ -5,25 +5,7 @@
         <ng-container *ngIf="!auctionForm.value.uid">Crear subasta</ng-container>
     </p>
 
-    <!-- <input multiple type="file" name="files" id="files" (change)="uploadImages($event)"
-        accept=".jpg, .jpeg, .gif, .png, .apng, .svg, .bmp, .png"> -->
-
-    <!-- <p>Preview images</p>
-    <div class="flex flex-wrap gap-2">
-        <ng-container *ngFor="let imagePrev of previews | keyvalue">
-            <img class="object-contain" [src]="imagePrev.value.preview" alt="Could not load" width="100" height="100">
-            <p>{{imagePrev.key}} -> {{imagePrev.value.progress}}</p>
-        </ng-container>
-    </div> -->
-
-    <!-- <div class="flex flex-wrap gap-2" *ngIf="imagesLinks.length">
-        <ng-container *ngFor="let imageLink of imagesLinks">
-            <img class="object-contain" [src]="imageLink" alt="Could not load" width="100" height="100">
-        </ng-container>
-    </div> -->
-
     <form class="grid gap-2 w-full max-w-lg" (ngSubmit)="saveAuctionForm()" [formGroup]="auctionForm">
-        <!-- <input type="hidden" name="uid" formControlName="uid"> -->
         <label for="title">Título de la subasta</label>
         <input required type="text" name="title" id="title"
             class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400" formControlName="title"
@@ -63,11 +45,6 @@
                 </button>
             </div>
         </div>
-
-        <!-- <button type="button" (click)="updateArticles()" *ngIf="auctionForm.get('uid')?.value"
-            class="w-fit p-2 border-2 rounded-md text-white border-purple-600 bg-purple-600 hover:border-purple-300 hover:bg-purple-300 ">
-            Save articles
-        </button> -->
 
         <div class="pt-2 grid grid-flow-col gap-3 justify-start">
             <button type="submit" [disabled]="auctionForm.invalid"
