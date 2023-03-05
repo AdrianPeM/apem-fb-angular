@@ -23,7 +23,7 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
   remainingTime: number = 0
   isActive: boolean = false
   dueDate: number = 0
-  countdown!: ReturnType<typeof setInterval>
+  countdown!: ReturnType<typeof setInterval> | null
 
   constructor(
     private router: Router,
@@ -37,7 +37,6 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    console.log('ng on init')
     const auctionId = this.route.snapshot.paramMap.get('id')
     if (!auctionId) return
 
@@ -48,7 +47,6 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
         if (this.isActive && !this.auction.dueDate) {
           this.stopCountdown()
         } else if (this.auction.dueDate && !this.countdown && ((this.auction.dueDate.seconds + 360) > Timestamp.now().seconds)) {
-          console.log('start countdown -> ', this.auction.dueDate)
           this.dueDate = (this.auction.dueDate.seconds + 180) * 1000
           this.startCountdown()
         }
@@ -81,12 +79,11 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
       else
         this.remainingTime = timeLeft
     }, 1000)
-    console.log('countdown -> ', this.countdown)
   }
 
   stopCountdown(): void {
-    console.log('stop countdown, interval -> ', this.countdown)
-    clearInterval(this.countdown)
+    this.countdown && clearInterval(this.countdown)
+    this.countdown = null
     this.remainingTime = 0
     this.isActive = false
   }
@@ -103,9 +100,9 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
     this.auctionsService.bid(this.auction)
   }
 
-  showServerTimestamp(): void {
-    console.log('serverTimestamp -> ', Timestamp.fromDate(new Date()))
-  }
+  // showServerTimestamp(): void {
+  //   console.log('serverTimestamp -> ', Timestamp.fromDate(new Date()))
+  // }
 
   startAuction(): void {
     this.auctionsService.startAuction(this.auction.uid, this.auctionForm.value.startPrice)
@@ -124,7 +121,6 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
     })
 
     articleDialogRef.afterClosed().subscribe(result => {
-      console.log('Set article ? -> ', result)
       if (result) {
         this.auctionsService.setAuctionItem(this.auction.uid, article)
       }
@@ -141,6 +137,6 @@ export class SelectArticleDialog {
     public dialogRef: MatDialogRef<SelectArticleDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
-    console.log('Start auction with this article -> ', data)
+    // console.log('Start auction with this article -> ', data)
   }
 }
