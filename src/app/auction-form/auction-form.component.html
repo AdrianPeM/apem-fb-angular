@@ -29,24 +29,7 @@
             class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400"
             formControlName="increasePrice" placeholder="Incremento por puja">
 
-
-        <button type="button" (click)="openArticleDialog()"
-            class="w-fit p-2 border-2 rounded-md text-white border-purple-600 bg-purple-600 hover:border-purple-300 hover:bg-purple-300 ">
-            Agregar artículo
-        </button>
-
-        <div class="grid gap-1" *ngIf="articles.length">
-            <p>Artículos</p>
-            <div class="grid gap-1 grid-cols-2">
-                <button (click)="openArticleDialog(article, i)"
-                    class="p-2 rounded-md shadow-gray-400 shadow-sm hover:bg-gray-300 text-ellipsis overflow-hidden"
-                    *ngFor="let article of articles; let i = index" type="button">
-                    {{article.name}}
-                </button>
-            </div>
-        </div>
-
-        <div class="pt-2 grid grid-flow-col gap-3 justify-start">
+        <div class="pt-2 grid grid-flow-col gap-3 justify-start" *ngIf="auctionForm.touched">
             <button type="submit" [disabled]="auctionForm.invalid"
                 class="rounded p-2 w-fit bg-purple-600 text-white hover:bg-purple-400 disabled:pointer-events-none disabled:opacity-60">
                 <ng-container *ngIf="auctionForm.get('uid')?.value">
@@ -62,4 +45,19 @@
             </button>
         </div>
     </form>
+
+    <div class="grid gap-2 mt-2 w-full max-w-lg">
+        <p class="text-xl font-bold">Artículos</p>
+        <button type="button" (click)="openArticleDialog()"
+            class="w-fit p-2 rounded-md border-2 border-solid border-purple-300 hover:bg-purple-300 ng-star-inserted">
+            Agregar artículo
+        </button>
+        <div class="grid gap-1 sm:grid-cols-2 lg:grid-cols-3" *ngIf="articles.length">
+            <button (click)="openArticleDialog(article, i)"
+                class="p-2 rounded-md shadow-gray-400 shadow-sm hover:bg-purple-300 whitespace-nowrap text-ellipsis overflow-hidden"
+                *ngFor="let article of articles; let i = index" type="button">
+                {{article.name}}
+            </button>
+        </div>
+    </div>
 </div>

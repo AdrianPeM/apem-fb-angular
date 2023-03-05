@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, CollectionReference, deleteDoc, doc, DocumentData, Firestore, updateDoc } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, CollectionReference, deleteDoc, doc, DocumentData, Firestore, Timestamp, updateDoc } from '@angular/fire/firestore';
 import { Auction } from '../types/Auction';
 import { Observable } from 'rxjs'
 import { SpinnerService } from '../services/spinner.service';
@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { AlertService } from '../services/alert.service';
 import { AuthService } from '../auth/auth.service';
 import { Article } from '../types/Article';
+import { serverTimestamp } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -114,6 +115,28 @@ export class AuctionsService {
       await updateDoc(auctionsDocRef, {
         auctionItem: article
       })
+    } catch (error: any) {
+      this.alertService.showAlert(`${error.code} - ${error.message}`)
+    }
+    this.spinnerService.stopLoading()
+  }
+
+  async startAuction(uid: string, startPrice: number): Promise<void> {
+    this.spinnerService.startLoading('Guardando artículo')
+    try {
+      const auctionsDocRef = doc(this.firestore, 'auctions', uid)
+      await updateDoc(auctionsDocRef, { dueDate: serverTimestamp(), startPrice })
+    } catch (error: any) {
+      this.alertService.showAlert(`${error.code} - ${error.message}`)
+    }
+    this.spinnerService.stopLoading()
+  }
+
+  async stopAuction(uid: string): Promise<void> {
+    this.spinnerService.startLoading('Guardando artículo')
+    try {
+      const auctionsDocRef = doc(this.firestore, 'auctions', uid)
+      await updateDoc(auctionsDocRef, { dueDate: null })
     } catch (error: any) {
       this.alertService.showAlert(`${error.code} - ${error.message}`)
     }

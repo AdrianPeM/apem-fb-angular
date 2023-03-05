@@ -1,10 +1,33 @@
 <!-- <div class="grid p-2 h-full items-center gap-2 border-2 rounded-md border-gray-300"> -->
 <div class="flex flex-col justify-between p-4 h-full gap-2 border-2 rounded-md border-gray-300">
-    <p class="py-1 font-bold">{{auction.title}}</p>
-    <p class="py-1 text-sm">{{auction.description}}</p>
-    <p class="py-1 text-sm font-bold">{{auction.startPrice | currency: 'MXN'}}</p>
-    <button *ngIf="getUser().role === 'ADMIN'" (click)="editAuction()"
-        class="p-2 border-2 rounded-md border-purple-300 hover:bg-purple-300">Editar</button>
+    <div class="flex">
+        <button *ngIf="!isActive && getUser().role === 'ADMIN'" (click)="editAuction()"
+            class="flex items-center w-fit text-purple-600 hover:text-purple-300" title="Editar">
+            <mat-icon>edit</mat-icon>
+            Editar
+        </button>
+        <button *ngIf="getUser().role === 'ADMIN' && isActive" (click)="stopAuction()"
+            class="flex items-center w-fit text-red-600 hover:text-red-300" title="Detener">
+            <!-- class=" rounded p-2 w-fit bg-red-600 text-white hover:bg-red-400 disabled:pointer-events-none
+            disabled:opacity-60 ng-star-inserted"> -->
+            <mat-icon>pause_circle_filled</mat-icon>
+            Detener
+        </button>
+    </div>
+    <p class="py-1 text-lg font-bold">{{auction.title}}</p>
+    <p class="py-1 text-sm font-bold">{{auction.description}}</p>
+    <form class="grid gap-2" (ngSubmit)="startAuction()" [formGroup]="auctionForm"
+        *ngIf="this.auction.uid && !isActive && getUser().role === 'ADMIN'">
+        <label class="font-bold" for="title">Precio inicial del artículo</label>
+        <input class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400" type="number"
+            name="startPrice" id="startPrice" formControlName="startPrice" placeholder="Precio inicial">
+        <button type="submit"
+            class="w-fit p-2 border-2 rounded-md text-white border-purple-600 bg-purple-600 hover:border-purple-300 hover:bg-purple-300 ">
+            Comenzar subasta
+        </button>
+    </form>
+    <p class="py-1 text-sm font-bold" *ngIf="isActive">{{auction.startPrice | currency: 'MXN'}}</p>
+    <p class="py-1 text-sm font-bold text-red-800">Tiempo restante: {{remainingTime | timeDHMS}}</p>
     <ng-container *ngIf="auction.auctionItem">
         Vista previa del artículo
         <div class="flex flex-wrap gap-2">
@@ -15,10 +38,10 @@
             </ng-container>
         </div>
     </ng-container>
-    <ng-container *ngIf="getUser().role === 'ADMIN' && auction.articles?.length">
-        <p>Artículos</p>
+    <ng-container *ngIf="!isActive && getUser().role === 'ADMIN' && auction.articles?.length">
+        <p class="text-lg font-bold">Seleccionar artículo</p>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-1">
-            <div class="p-2 rounded-md shadow-gray-400 shadow-sm hover:bg-gray-300 text-ellipsis overflow-hidden cursor-pointer"
+            <div class="p-2 rounded-md shadow-gray-400 shadow-sm hover:bg-purple-300 text-ellipsis overflow-hidden cursor-pointer"
                 *ngFor="let article of auction.articles; let i = index" (click)="openSelectArticle(article)">
                 {{article.name}}
             </div>
@@ -28,8 +51,8 @@
         class="p-2 border-2 rounded-md text-white border-purple-600 bg-purple-600 hover:border-purple-300 hover:bg-purple-300 ">
         Get servertimestamp
     </button> -->
-    <!-- <button *ngIf="getUser().role !== 'ADMIN' && isActive" (click)="bid()"
-        class="p-2 border-2 rounded-md text-white border-purple-600 bg-purple-600 hover:border-purple-300 hover:bg-purple-300 ">
+    <button *ngIf="getUser().role !== 'ADMIN' && isActive" (click)="bid()"
+        class="p-4 border-2 rounded-md tracking-widest text-lg text-white font-bold border-purple-600 bg-purple-600 hover:border-purple-300 hover:bg-purple-300 ">
         Ofertar: {{auction.increasePrice | currency: 'MXN'}}
-    </button> -->
+    </button>
 </div>

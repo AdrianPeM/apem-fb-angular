@@ -63,7 +63,8 @@ export class AuctionFormComponent implements OnInit {
 
   openArticleDialog(article: Article = {} as Article, idx: number = this.articles.length): void {
     const dialogRef = this.dialog.open(ArticleFormComponent, {
-      width: '70vw',
+      width: '100%',
+      maxWidth: '37rem',
       data: { article, idx, auctionUid: this.auctionForm.value.uid }
     })
 

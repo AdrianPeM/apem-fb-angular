@@ -11,7 +11,7 @@
         <input multiple type="file" name="files" id="files" (change)="uploadFiles($event)"
             accept=".jpg, .jpeg, .gif, .png, .apng, .svg, .bmp, .png">
     </form>
-    <p>Galería</p>
+    <p class="font-bold mt-2">Galería</p>
     <div class="flex flex-wrap gap-2" *ngIf="images.length">
         <ng-container *ngFor="let img of images | keyvalue">
             <div class="flex relative h-fit">
@@ -25,7 +25,11 @@
         </ng-container>
     </div>
 </mat-dialog-content>
-<div mat-dialog-actions>
-    <button mat-button mat-dialog-close (click)="cancel()">Cancelar</button>
-    <button mat-button cdkFocusInitial (click)="saveArticle()">Guardar</button>
+<div mat-dialog-actions class="grid justify-end gap-2">
+    <button
+        class="rounded p-2 w-fit bg-red-600 text-white hover:bg-red-400 disabled:pointer-events-none disabled:opacity-60 ng-star-inserted"
+        mat-button mat-dialog-close (click)="cancel()">Cancelar</button>
+    <button
+        class="rounded p-2 w-fit bg-purple-600 text-white hover:bg-purple-400 disabled:pointer-events-none disabled:opacity-60 ng-star-inserted"
+        mat-button cdkFocusInitial (click)="saveArticle()">Guardar</button>
 </div>

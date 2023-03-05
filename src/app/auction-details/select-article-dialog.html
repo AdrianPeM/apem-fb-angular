@@ -2,9 +2,17 @@
     <mat-icon>close</mat-icon>
 </button>
 <mat-dialog-content>
-    Empezar subasta con este articulo
+    <p class="text-lg font-bold">Empezar subasta con este articulo</p>
 </mat-dialog-content>
-<div mat-dialog-actions>
+<div mat-dialog-actions class="grid justify-end gap-2">
+    <button
+        class="rounded p-2 w-fit bg-red-600 text-white hover:bg-red-400 disabled:pointer-events-none disabled:opacity-60 ng-star-inserted"
+        mat-button mat-dialog-close [mat-dialog-close]="false">Cancelar</button>
+    <button
+        class="rounded p-2 w-fit bg-purple-600 text-white hover:bg-purple-400 disabled:pointer-events-none disabled:opacity-60 ng-star-inserted"
+        mat-button cdkFocusInitial [mat-dialog-close]="true">Aceptar</button>
+</div>
+<!-- <div mat-dialog-actions>
     <button mat-button mat-dialog-close [mat-dialog-close]="false">Cancelar</button>
     <button mat-button cdkFocusInitial [mat-dialog-close]="true">Aceptar</button>
-</div>
+</div> -->
