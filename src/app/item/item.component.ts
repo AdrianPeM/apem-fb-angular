@@ -66,13 +66,6 @@ export class ItemComponent implements OnInit {
     }
   }
 
-  async uploadFiles(event: any): Promise<void> {
-    if (!event.target.files || !event.target.files.length) return
-    const itemImages = await this.itemsService.uploadFiles(event.target.files, this.auctionId, this.item.uid)
-    this.images.push(...itemImages)
-    this.itemsService.updateItemImages(this.images, this.item.uid)
-  }
-
   async deleteFile(fileName: string): Promise<void> {
     await this.storageService.deleteFile(`${this.auctionId}/${this.item.uid}/${fileName}`)
     this.images = this.images.filter(({ name }) => name !== fileName)
@@ -108,6 +101,7 @@ export class ItemComponent implements OnInit {
       const retreivedFile = await this.getFile(fileEntry)
       filteredFiles.push(retreivedFile)
     }
+
     console.log('upload files ---->', filteredFiles)
 
     if (filteredFiles.length > 0) {
