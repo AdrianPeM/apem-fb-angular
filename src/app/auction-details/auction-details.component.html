@@ -32,7 +32,11 @@
     </form>
     <p class="py-1 text-lg font-bold">Precio: {{auction.startPrice | currency: 'MXN'}}</p>
     <p class="py-1 text-lg font-bold text-violet-800" *ngIf="!isActive">
-        La subasta no ha comenzado
+        {{auction.startedAt ?
+        'El tiempo para ofertar por el artículo en subasta ha terminado'
+        :
+        'La subasta no ha comenzado'
+        }}
     </p>
     <p class="py-1 text-lg font-bold" *ngIf="isActive">Subasta en curso</p>
     <p class="py-1 text-sm font-bold text-red-800" *ngIf="isActive">
@@ -48,7 +52,7 @@
             </ng-container>
         </div>
     </ng-container>
-    <ng-container *ngIf="!isActive && getUser().role === 'ADMIN' && auction.articles?.length">
+    <ng-container *ngIf="!isActive && getUser().role === 'ADMIN' && items.length">
         <p class="text-lg font-bold">Seleccionar artículo</p>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-1">
             <!-- Item articles array -->
