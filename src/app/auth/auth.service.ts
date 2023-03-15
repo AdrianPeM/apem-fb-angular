@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { doc, getDoc, setDoc, Firestore, collection, CollectionReference, DocumentData, addDoc } from '@angular/fire/firestore';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { AlertService } from '../services/alert.service';
 import { SpinnerService } from '../services/spinner.service';
@@ -16,7 +16,13 @@ export class AuthService {
   user: User = {} as User;
   auth = getAuth()
 
-  constructor(private router: Router, private firestore: Firestore, private spinnerService: SpinnerService, private alertService: AlertService) {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private firestore: Firestore,
+    private spinnerService: SpinnerService,
+    private alertService: AlertService
+  ) {
     this.userCollection = collection(this.firestore, 'users');
   }
 
@@ -37,6 +43,18 @@ export class AuthService {
     this.user = {} as User;
   }
 
+  redirectLastRoute(): void {
+    const redirectURL = this.route.snapshot.queryParamMap.get('redirectURL')
+    console.log('redirect to: ', redirectURL)
+    // this.router.navigate([redirectURL])
+    if (redirectURL) {
+      this.router.navigateByUrl(redirectURL)
+        .catch(() => this.router.navigate(['']))
+    } else {
+      this.router.navigate([''])
+    }
+  }
+
   async login(email: string, password: string): Promise<void> {
     this.spinnerService.startLoading()
 
@@ -45,7 +63,7 @@ export class AuthService {
       const { user } = userCredential
       this.authenticated = true
       this.setUser(user)
-      this.router.navigate([''])
+      this.redirectLastRoute()
     } catch (error: any) {
       this.alertService.showAlert(`${error.code} - ${error.message}`)
       this.authenticated = false

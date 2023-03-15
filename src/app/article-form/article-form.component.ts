@@ -31,7 +31,8 @@ export class ArticleFormComponent implements OnInit {
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<ArticleFormComponent>,
     private spinnerService: SpinnerService,
-    @Inject(MAT_DIALOG_DATA) data: any) {
+    @Inject(MAT_DIALOG_DATA) data: any
+  ) {
     const { article } = data
     const { images = [] } = article
     this.article = article
@@ -63,8 +64,8 @@ export class ArticleFormComponent implements OnInit {
   }
 
   async uploadFiles(event: any): Promise<void> {
-    this.spinnerService.startLoading()
     if (!event.target.files || !event.target.files.length) return
+    this.spinnerService.startLoading()
     const files: File[] = Array.from(event.target.files)
     // const imageObjects: any = {}
 

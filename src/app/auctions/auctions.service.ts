@@ -8,6 +8,7 @@ import { AlertService } from '../services/alert.service';
 import { AuthService } from '../auth/auth.service';
 import { Article } from '../types/Article';
 import { serverTimestamp } from 'firebase/firestore';
+import { Item } from '../item/items.service';
 
 @Injectable({
   providedIn: 'root'
@@ -34,7 +35,7 @@ export class AuctionsService {
     this.spinnerService.startLoading()
     let uid = ''
     try {
-      const { title, dueDate, description, startPrice, increasePrice, articles } = auction
+      const { title, dueDate, description, startPrice, increasePrice, articles, startsOn } = auction
       const result = await addDoc(this.auctionCollection, {
         title,
         dueDate,
@@ -42,7 +43,9 @@ export class AuctionsService {
         startPrice,
         increasePrice,
         articles,
-        auctionItem: null
+        auctionItem: null,
+        startsOn,
+        isActive: false
       })
 
       uid = result.id
@@ -56,9 +59,9 @@ export class AuctionsService {
   async updateAuction(auction: Auction): Promise<void> {
     this.spinnerService.startLoading()
     try {
-      const { title, dueDate, description, startPrice, increasePrice, articles } = auction
+      const { title, dueDate, description, startPrice, increasePrice, articles, startsOn } = auction
       const auctionsDocRef = doc(this.firestore, 'auctions', auction.uid)
-      await updateDoc(auctionsDocRef, { title, dueDate, description, startPrice, increasePrice, articles })
+      await updateDoc(auctionsDocRef, { title, dueDate, description, startPrice, increasePrice, articles, startsOn })
       this.router.navigate(['/'])
     } catch (error: any) {
       this.alertService.showAlert(`${error.code} - ${error.message}`)
@@ -96,7 +99,7 @@ export class AuctionsService {
   }
 
   async updateArticles(uid: string, articles: Article[]): Promise<void> {
-    this.spinnerService.startLoading('Guardando artículo')
+    this.spinnerService.startLoading()
     try {
       const auctionsDocRef = doc(this.firestore, 'auctions', uid)
       await updateDoc(auctionsDocRef, {
@@ -108,8 +111,8 @@ export class AuctionsService {
     this.spinnerService.stopLoading()
   }
 
-  async setAuctionItem(uid: string, article: Article | null): Promise<void> {
-    this.spinnerService.startLoading('Guardando artículo')
+  async setAuctionArticle(uid: string, article: Article | null): Promise<void> {
+    this.spinnerService.startLoading()
     try {
       const auctionsDocRef = doc(this.firestore, 'auctions', uid)
       await updateDoc(auctionsDocRef, {
@@ -121,11 +124,24 @@ export class AuctionsService {
     this.spinnerService.stopLoading()
   }
 
-  async startAuction(uid: string, startPrice: number): Promise<void> {
-    this.spinnerService.startLoading('Guardando artículo')
+  async setAuctionItem(uid: string, item: Item | null): Promise<void> {
+    this.spinnerService.startLoading()
     try {
       const auctionsDocRef = doc(this.firestore, 'auctions', uid)
-      await updateDoc(auctionsDocRef, { dueDate: serverTimestamp(), startPrice })
+      await updateDoc(auctionsDocRef, {
+        auctionItem: item,
+      })
+    } catch (error: any) {
+      this.alertService.showAlert(`${error.code} - ${error.message}`)
+    }
+    this.spinnerService.stopLoading()
+  }
+
+  async startAuction(uid: string, startPrice: number): Promise<void> {
+    this.spinnerService.startLoading()
+    try {
+      const auctionsDocRef = doc(this.firestore, 'auctions', uid)
+      await updateDoc(auctionsDocRef, { dueDate: serverTimestamp(), startPrice, isActive: true })
     } catch (error: any) {
       this.alertService.showAlert(`${error.code} - ${error.message}`)
     }
@@ -133,10 +149,10 @@ export class AuctionsService {
   }
 
   async stopAuction(uid: string): Promise<void> {
-    this.spinnerService.startLoading('Guardando artículo')
+    this.spinnerService.startLoading()
     try {
       const auctionsDocRef = doc(this.firestore, 'auctions', uid)
-      await updateDoc(auctionsDocRef, { dueDate: null })
+      await updateDoc(auctionsDocRef, { isActive: false })
     } catch (error: any) {
       this.alertService.showAlert(`${error.code} - ${error.message}`)
     }

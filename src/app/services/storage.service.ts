@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { deleteObject, getDownloadURL, ref, Storage, uploadBytesResumable, UploadTaskSnapshot } from '@angular/fire/storage';
+import { deleteObject, getDownloadURL, getMetadata, ref, Storage, uploadBytesResumable, UploadTaskSnapshot } from '@angular/fire/storage';
 import { AlertService } from './alert.service';
 import { SpinnerService } from './spinner.service';
 
@@ -8,7 +8,11 @@ import { SpinnerService } from './spinner.service';
 })
 export class StorageService {
 
-  constructor(private storage: Storage, private spinnerService: SpinnerService, private alertService: AlertService) { }
+  constructor(
+    private storage: Storage,
+    private spinnerService: SpinnerService,
+    private alertService: AlertService
+  ) { }
 
   uploadFile(
     file: File,
@@ -26,6 +30,7 @@ export class StorageService {
         () => reject(null),
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(resolve)
+          getMetadata(uploadTask.snapshot.ref).then(metad => (console.log(metad)))
         }
       )
     })

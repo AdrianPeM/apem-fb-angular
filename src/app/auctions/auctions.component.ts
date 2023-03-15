@@ -14,7 +14,7 @@ import { AuctionsService } from './auctions.service';
 })
 
 export class AuctionsComponent implements OnInit, OnDestroy {
-  suscription: Subscription = new Subscription()
+  suscription!: Subscription
 
   auctions: Array<Auction> = []
 
@@ -29,7 +29,8 @@ export class AuctionsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.suscription = this.auctionsService
       .getAuctions()
-      .subscribe(auctions => { /*if (auctions.length !== this.auctions.length) */this.auctions = auctions })
+      .subscribe(auctions => { /*if (auctions.length !== this.auctions.length) */this.auctions = auctions
+    console.log('auctions changed') })
   }
 
   ngOnDestroy(): void {

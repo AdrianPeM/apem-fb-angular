@@ -7,6 +7,7 @@ import { Injectable } from '@angular/core';
 export class SpinnerService {
   msg: string | null = null
   loading: boolean = false
+  count: number = 0
 
   constructor() { }
 
@@ -16,7 +17,10 @@ export class SpinnerService {
   }
 
   stopLoading(): void {
-    this.msg = null
-    this.loading = false
+    console.log('stop spinner -> ', this.count)
+    if (--this.count <= 0) {
+      this.loading = false
+      this.msg = null
+    }
   }
 }

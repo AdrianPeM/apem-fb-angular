@@ -3,13 +3,20 @@
     <p class="py-1 font-bold">{{auction.title}}</p>
     <p class="py-1 text-sm">{{auction.description}}</p>
     <p class="py-1 text-sm font-bold">{{auction.startPrice | currency: 'MXN'}}</p>
-    <p class="py-1 text-red-800 text-sm font-bold" *ngIf="!isActive">Subasta no disponible</p>
+    <p class="py-1 text-violet-800 text-sm font-bold">
+        <ng-container *ngIf="auction.startsOn">
+            Fecha: {{auction.startsOn?.seconds * 1000 | date: 'MMM d, yyyy, h:mm a z'}}
+        </ng-container>
+        <ng-container *ngIf="!auction.startsOn">
+            Fecha no definida
+        </ng-container>
+    </p>
     <button *ngIf="getUserRole() === 'ADMIN'" (click)="editAuction()"
-        class="p-2 border-2 rounded-md border-purple-300 hover:bg-purple-300">Editar</button>
+        class="p-2 border-2 rounded-md border-indigo-300 hover:bg-indigo-300">Editar</button>
     <button (click)="openDetails()"
-        class="p-2 border-2 rounded-md border-purple-300 hover:bg-purple-300">Detalles</button>
+        class="p-2 border-2 rounded-md border-indigo-300 hover:bg-indigo-300">Detalles</button>
     <button *ngIf="getUserRole() !== 'ADMIN' && isActive" (click)="bid()"
-        class="p-2 border-2 rounded-md text-white border-purple-600 bg-purple-600 hover:border-purple-300 hover:bg-purple-300 ">
+        class="p-2 border-2 rounded-md text-white border-indigo-600 bg-indigo-600 hover:border-indigo-300 hover:bg-indigo-300 ">
         Ofertar: {{auction.increasePrice | currency: 'MXN'}}
     </button>
 </div>

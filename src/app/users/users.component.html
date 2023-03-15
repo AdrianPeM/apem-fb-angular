@@ -3,11 +3,11 @@
         <div *ngIf="getUser().email !== user.email"
             class="m-2 p-4 border-2 border-solid border-gray-400 rounded-md grid gap-2 justify-items-center">
             <p>{{ user.email }}</p>
-            <button class="p-2 w-fit text-purple-800 hover:text-purple-400"
+            <button class="p-2 w-fit text-indigo-800 hover:text-indigo-400"
                 *ngIf="getUser().role === 'ADMIN' && user.role !== 'ADMIN'" (click)="setAdmin(user.uid)">
                 Assign admin
             </button>
-            <button class="p-2 w-fit text-purple-800 hover:text-purple-400"
+            <button class="p-2 w-fit text-indigo-800 hover:text-indigo-400"
                 *ngIf="getUser().role === 'ADMIN' && user.role === 'ADMIN'" (click)="revokeAdmin(user.uid)">
                 Revoke admin
             </button>

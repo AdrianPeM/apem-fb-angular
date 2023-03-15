@@ -24,7 +24,8 @@ import { ArticleFormComponent } from './article-form/article-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgMaterialModule } from './ng-material/ng-material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ItemComponent } from './item/item.component';
+import { NgxFileDropModule } from 'ngx-file-drop';
 
 
 @NgModule({
@@ -40,7 +41,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     AuctionDetailsComponent,
     TimeDHMSPipe,
     ArticleFormComponent,
-    SelectArticleDialog
+    SelectArticleDialog,
+    ItemComponent,
   ],
   imports: [
     BrowserAnimationsModule,
@@ -51,6 +53,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     AuctionModule,
     ReactiveFormsModule,
     NgMaterialModule,
+    NgxFileDropModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideDatabase(() => getDatabase()),
     provideFirestore(() => getFirestore()),

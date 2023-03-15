@@ -3,8 +3,10 @@ import { doc, Firestore, onSnapshot, serverTimestamp, Timestamp, Unsubscribe } f
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AuctionsService } from '../auctions/auctions.service';
 import { AuthService } from '../auth/auth.service';
+import { Item, ItemsService } from '../item/items.service';
 import { AlertService } from '../services/alert.service';
 import { Article } from '../types/Article';
 import { Auction } from '../types/Auction';
@@ -24,6 +26,8 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
   isActive: boolean = false
   dueDate: number = 0
   countdown!: ReturnType<typeof setInterval> | null
+  items: Item[] = []
+  itemsSubscription!: Subscription
 
   constructor(
     private router: Router,
@@ -32,6 +36,7 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
     private firestore: Firestore,
     private authService: AuthService,
     private auctionsService: AuctionsService,
+    private itemsService: ItemsService,
     private alertService: AlertService,
     public articleDialog: MatDialog
   ) { }
@@ -40,13 +45,28 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
     const auctionId = this.route.snapshot.paramMap.get('id')
     if (!auctionId) return
 
+    this.initAuctionSubscription(auctionId)
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribeAuction && this.unsubscribeAuction()
+  }
+
+  initArticleForm(): void {
+    this.auctionForm = this.formBuilder.group({
+      startPrice: [this.auction?.startPrice || '', [Validators.required]],
+    })
+  }
+
+  initAuctionSubscription(auctionId: string): void {
     this.unsubscribeAuction = onSnapshot(doc(this.firestore, 'auctions', auctionId), doc => {
       if (doc.data() !== undefined) {
         this.auction = { ...doc.data(), uid: doc.id } as Auction
         this.initArticleForm()
+        if (!this.itemsSubscription) this.initItemsSubscription()
         if (this.isActive && !this.auction.dueDate) {
           this.stopCountdown()
-        } else if (this.auction.dueDate && !this.countdown && ((this.auction.dueDate.seconds + 360) > Timestamp.now().seconds)) {
+        } else if (this.auction.dueDate && !this.countdown && ((this.auction.dueDate.seconds + 180) > Timestamp.now().seconds)) {
           this.dueDate = (this.auction.dueDate.seconds + 180) * 1000
           this.startCountdown()
         }
@@ -59,17 +79,18 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
     })
   }
 
-  ngOnDestroy(): void {
-    this.unsubscribeAuction()
-  }
-
-  initArticleForm(): void {
-    this.auctionForm = this.formBuilder.group({
-      startPrice: [this.auction?.startPrice || '', [Validators.required]],
-    })
+  initItemsSubscription(): void {
+    console.log('initialize items subscription ')
+    this.itemsSubscription = this.itemsService
+      .getItems(this.auction.uid)
+      .subscribe(items => {
+        this.items = items
+        console.log('items changed ')
+      })
   }
 
   startCountdown(): void {
+    console.log('Start countdown')
     this.isActive = true
     this.countdown = setInterval(() => {
       const now = Timestamp.now().seconds * 1000
@@ -82,6 +103,7 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
   }
 
   stopCountdown(): void {
+    console.log('Stop countdown')
     this.countdown && clearInterval(this.countdown)
     this.countdown = null
     this.remainingTime = 0
@@ -122,10 +144,26 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
 
     articleDialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.auctionsService.setAuctionItem(this.auction.uid, article)
+        this.auctionsService.setAuctionArticle(this.auction.uid, article)
       }
     })
   }
+
+  openSelectItem(item: Item): void {
+    const articleDialogRef = this.articleDialog.open(SelectArticleDialog, {
+      data: {
+        item
+      }
+    })
+
+    articleDialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('setted item -> ', item)
+        this.auctionsService.setAuctionItem(this.auction.uid, item)
+      }
+    })
+  }
+
 }
 
 @Component({

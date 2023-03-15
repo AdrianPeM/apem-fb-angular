@@ -7,6 +7,8 @@ export interface Auction {
     startPrice: number,
     increasePrice: number,
     dueDate: any,
+    startsOn: any,
     articles: Article[],
-    auctionItem: Article | null
+    auctionItem: Article | null,
+    isActive: boolean
 }

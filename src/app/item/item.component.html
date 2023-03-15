@@ -1,8 +1,8 @@
-<button mat-icon-button style="float: right;" (click)="cancel()">
+<button mat-icon-button style="float: right;" mat-dialog-close>
     <mat-icon>close</mat-icon>
 </button>
 <mat-dialog-content>
-    <form class="grid gap-2 w-full max-w-lg" (ngSubmit)="saveArticle()" [formGroup]="articleForm">
+    <form class="grid gap-2 w-full max-w-lg" [formGroup]="itemForm">
         <label for="name">Nombre del artículo</label>
         <input required type="text" name="name" id="name"
             class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400" formControlName="name"
@@ -10,15 +10,25 @@
 
         <input multiple type="file" name="files" id="files" (change)="uploadFiles($event)"
             accept=".jpg, .jpeg, .gif, .png, .apng, .svg, .bmp, .png">
+        <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" [accept]="allowedFiles.join(',')"
+            dropZoneClassName="grid place-content-center h-24 rounded-xl border-2 border-solid border-indigo-300"
+            contentClassName="custom-dropzone grid place-content-center place-items-center">
+            <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                Suelta los archivos aquí.
+                <button (click)="openFileSelector()"
+                    class="p-2 border-2 rounded-md border-gray-400 hover:bg-white bg-indigo-300">Seleccionar
+                    archivos</button>
+            </ng-template>
+        </ngx-file-drop>
     </form>
     <p class="font-bold mt-2">Galería</p>
     <div class="flex flex-wrap gap-2" *ngIf="images.length">
-        <ng-container *ngFor="let img of images | keyvalue">
+        <ng-container *ngFor="let img of images">
             <div class="flex relative h-fit">
-                <img class="object-contain" [src]="img.value.src" alt="Could not load" width="100" height="100">
+                <img class="object-contain" [src]="img.src" alt="Could not load" width="100" height="100">
                 <button mat-icon-button title="Eliminar"
                     class="flex absolute p-1 right-2 top-2 rounded-full bg-gray-400 bg-opacity-10 hover:bg-red-500 hover:text-white overflow-hidden"
-                    (click)="deleteFile(img.value.name)">
+                    (click)="deleteFile(img.name)">
                     <mat-icon>close</mat-icon>
                 </button>
             </div>
@@ -28,8 +38,8 @@
 <div mat-dialog-actions class="grid justify-end gap-2">
     <button
         class="rounded p-2 w-fit bg-red-600 text-white hover:bg-red-400 disabled:pointer-events-none disabled:opacity-60 ng-star-inserted"
-        mat-button mat-dialog-close (click)="cancel()">Cancelar</button>
-    <button
+        mat-button mat-dialog-close>Cerrar</button>
+    <button *ngIf="itemForm.touched"
         class="rounded p-2 w-fit bg-indigo-600 text-white hover:bg-indigo-400 disabled:pointer-events-none disabled:opacity-60 ng-star-inserted"
-        mat-button cdkFocusInitial (click)="saveArticle()">Guardar</button>
+        mat-button cdkFocusInitial (click)="saveItemForm()">Guardar</button>
 </div>
