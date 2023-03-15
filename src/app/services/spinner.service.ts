@@ -17,8 +17,8 @@ export class SpinnerService {
   }
 
   stopLoading(): void {
-    console.log('stop spinner -> ', this.count)
     if (--this.count <= 0) {
+      this.count = 0
       this.loading = false
       this.msg = null
     }

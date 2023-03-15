@@ -7,25 +7,25 @@
 
     <form class="grid gap-2 w-full max-w-lg" (ngSubmit)="saveAuctionForm()" [formGroup]="auctionForm">
         <label for="title">Título de la subasta</label>
-        <input required type="text" name="title" id="title"
+        <input indigo type="text" name="title" id="title"
             class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400" formControlName="title"
             placeholder="Título de la subasta">
 
         <label for="title">Descripción de la subasta</label>
-        <textarea required name="description" id="description" rows="4"
+        <textarea indigo name="description" id="description" rows="4"
             class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400 resize-none"
             formControlName="description" placeholder="Descripción de la subasta"></textarea>
 
         <label for="title">Fecha de la subasta</label>
-        <input required type="datetime-local" id="dueDate" name="dueDate" formControlName="dueDate">
+        <input required indigo type="datetime-local" id="dueDate" name="dueDate" formControlName="dueDate">
 
         <label for="title">Comenzar la subasta en </label>
-        <input required type="number" name="startPrice" id="startPrice"
+        <input indigo type="number" name="startPrice" id="startPrice"
             class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400" formControlName="startPrice"
             placeholder="Precio inicial">
 
         <label for="title">Incremento de la puja:</label>
-        <input required type="number" name="increasePrice" id="increasePrice"
+        <input indigo type="number" name="increasePrice" id="increasePrice"
             class="p-2 border-2 border-solid border-gray-400 rounded-md outline-blue-400"
             formControlName="increasePrice" placeholder="Incremento por puja">
 
@@ -66,11 +66,17 @@
         </div> -->
         <!-- Coleccion de items con relacion a la subasta -->
         <div class="grid gap-1 sm:grid-cols-2 lg:grid-cols-3" *ngIf="items.length">
-            <button (click)="openItemComponent(item)"
-                class="p-2 rounded-md shadow-gray-400 shadow-sm hover:bg-indigo-300 whitespace-nowrap text-ellipsis overflow-hidden"
-                *ngFor="let item of items; let i = index" type="button">
-                {{item.name}}
-            </button>
+            <div class="flex cursor-pointer p-2 rounded-md shadow-gray-400 shadow-sm hover:bg-indigo-300"
+                (click)="openItemComponent(item)" *ngFor="let item of items; let i = index">
+                <button class="flex-1 whitespace-nowrap text-ellipsis overflow-hidden" type="button">
+                    {{item.name}}
+                </button>
+                <button mat-icon-button title="Eliminar artículo"
+                    class="flex rounded-full bg-gray-400 bg-opacity-10 hover:bg-red-500 hover:text-white overflow-hidden"
+                    (click)="deleteItem($event, item)">
+                    <mat-icon>close</mat-icon>
+                </button>
+            </div>
         </div>
     </div>
 </div>

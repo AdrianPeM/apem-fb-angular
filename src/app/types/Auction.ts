@@ -10,5 +10,6 @@ export interface Auction {
     startsOn: any,
     articles: Article[],
     auctionItem: Article | null,
-    isActive: boolean
+    isActive: boolean,
+    startedAt: any
 }

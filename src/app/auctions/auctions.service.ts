@@ -71,7 +71,6 @@ export class AuctionsService {
 
   async deleteAuction(auctionId: string): Promise<void> {
     this.spinnerService.startLoading()
-    if (!confirm("¿Estas seguro de eliminar esta subasta?")) return
     try {
       const auctionsDocRef = doc(this.firestore, 'auctions', auctionId)
       await deleteDoc(auctionsDocRef)
@@ -137,11 +136,11 @@ export class AuctionsService {
     this.spinnerService.stopLoading()
   }
 
-  async startAuction(uid: string, startPrice: number): Promise<void> {
+  async startAuction(uid: string, startPrice: number, increasePrice: number): Promise<void> {
     this.spinnerService.startLoading()
     try {
       const auctionsDocRef = doc(this.firestore, 'auctions', uid)
-      await updateDoc(auctionsDocRef, { dueDate: serverTimestamp(), startPrice, isActive: true })
+      await updateDoc(auctionsDocRef, { startedAt: serverTimestamp(), startPrice, increasePrice })
     } catch (error: any) {
       this.alertService.showAlert(`${error.code} - ${error.message}`)
     }
@@ -152,7 +151,7 @@ export class AuctionsService {
     this.spinnerService.startLoading()
     try {
       const auctionsDocRef = doc(this.firestore, 'auctions', uid)
-      await updateDoc(auctionsDocRef, { isActive: false })
+      await updateDoc(auctionsDocRef, { startedAt: null })
     } catch (error: any) {
       this.alertService.showAlert(`${error.code} - ${error.message}`)
     }

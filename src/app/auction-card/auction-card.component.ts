@@ -35,7 +35,6 @@ export class AuctionCardComponent implements OnInit, OnDestroy {
   }
 
   startCountDown(): void {
-    console.log('start countdown')
     // this.isActive = true
     // const countDown = setInterval(() => {
     //   const timeLeft = new Date(this.auction.dueDate).getTime() - Date.now()

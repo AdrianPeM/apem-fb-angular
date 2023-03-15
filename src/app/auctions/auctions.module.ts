@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuctionFormComponent } from '../auction-form/auction-form.component';
 import { AppRoutingModule } from '../app-routing.module';
+import { NgMaterialModule } from '../ng-material/ng-material.module';
 
 @NgModule({
   declarations: [
@@ -12,7 +13,8 @@ import { AppRoutingModule } from '../app-routing.module';
     CommonModule,
     FormsModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgMaterialModule
   ]
 })
 export class AuctionModule { }

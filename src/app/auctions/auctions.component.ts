@@ -29,8 +29,10 @@ export class AuctionsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.suscription = this.auctionsService
       .getAuctions()
-      .subscribe(auctions => { /*if (auctions.length !== this.auctions.length) */this.auctions = auctions
-    console.log('auctions changed') })
+      .subscribe(auctions => {
+        /*if (auctions.length !== this.auctions.length) */
+        this.auctions = auctions
+      })
   }
 
   ngOnDestroy(): void {

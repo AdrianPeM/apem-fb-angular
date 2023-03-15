@@ -35,19 +35,18 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    console.log('unsubscribe ', this.itemsSubscription)
     this.itemsSubscription.unsubscribe()
   }
 
   private initAuctionForm(): void {
-    const auction: Auction = (history.state.auction || { articles: [] }) as Auction
+    const auction: Auction = (history.state.auction || { dueDate: (new Date().toISOString()).slice(0, -8), articles: [] }) as Auction
 
     this.auctionForm = this.formBuilder.group({
       uid: [auction.uid],
       description: [auction.description, [Validators.required]],
       dueDate: [auction.dueDate, [Validators.required]],
-      increasePrice: [auction.increasePrice, [Validators.required]],
-      startPrice: [auction.startPrice, [Validators.required]],
+      startPrice: [auction.startPrice],
+      increasePrice: [auction.increasePrice],
       title: [auction.title, [Validators.required]],
     })
 
@@ -60,14 +59,12 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
   }
 
   initItemsSubscription(): void {
-    console.log('initialize subscription ')
     this.itemsSubscription = this.itemsService
       .getItems(this.auctionForm.value.uid)
       .subscribe(items => {
         console.log('new items -> ', items)
         this.items = items
       })
-    console.log(this.itemsSubscription)
   }
 
   updateAuctionArticles(): void {
@@ -86,8 +83,22 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
     this.initItemsSubscription()
   }
 
-  deleteAuction(): void {
-    this.auctionsService.deleteAuction(this.auctionForm.value.uid)
+  async deleteAuction(): Promise<void> {
+    if (!confirm("¿Estas seguro de eliminar esta subasta?")) return
+    try {
+      for (const item of this.items) {
+        await this.itemsService.deleteItem(item)
+      }
+      this.auctionsService.deleteAuction(this.auctionForm.value.uid)
+    } catch (error: any) {
+      alert(`Ocurrió un error al eliminar\n${error.code} - ${error.message}`)
+    }
+  }
+
+  async deleteItem(event: any, item: Item): Promise<void> {
+    event.stopPropagation()
+    if (!confirm("¿Estas seguro de eliminar este artículo?")) return
+    this.itemsService.deleteItem(item)
   }
 
   openArticleDialog(article: Article = {} as Article, idx: number = this.articles.length): void {
@@ -105,7 +116,8 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
   }
 
   openItemComponent(item: Item = {} as Item): void {
-    const dialogRef = this.dialog.open(ItemComponent, {
+    // const dialogRef = 
+    this.dialog.open(ItemComponent, {
       width: '100%',
       maxWidth: '37rem',
       data: { item, auctionId: this.auctionForm.value.uid }
@@ -113,9 +125,9 @@ export class AuctionFormComponent implements OnInit, OnDestroy {
 
     // dialogRef.afterClosed().subscribe(result => {
     //   console.log('ItemComponent result -> ', result)
-      // if (!result) return
-      // this.articles[result.idx] = result.article
-      // this.updateAuctionArticles()
+    // if (!result) return
+    // this.articles[result.idx] = result.article
+    // this.updateAuctionArticles()
     // })
   }
 }

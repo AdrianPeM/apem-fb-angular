@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, CollectionReference, doc, DocumentData, Firestore, query, updateDoc, where } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, CollectionReference, deleteDoc, doc, DocumentData, Firestore, query, updateDoc, where } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { AlertService } from '../services/alert.service';
 import { SpinnerService } from '../services/spinner.service';
@@ -49,11 +49,24 @@ export class ItemsService {
 
       uid = result.id
     } catch (error: any) {
-      console.log('error creating item -> ', error)
       this.alertService.showAlert(`${error.code} - ${error.message}`)
     }
     this.spinnerService.stopLoading()
     return uid
+  }
+
+  async deleteItem(item: Item): Promise<void> {
+    this.spinnerService.startLoading()
+    try {
+      for (const img of item.images) {
+        await this.storageService.deleteFile(`${item.auctionId}/${item.uid}/${img.name}`)
+      }
+      const auctionsDocRef = doc(this.firestore, 'items', item.uid)
+      await deleteDoc(auctionsDocRef)
+    } catch (error: any) {
+      this.alertService.showAlert(`${error.code} - ${error.message}`)
+    }
+    this.spinnerService.stopLoading()
   }
 
   async updateItem(item: Item): Promise<void> {
@@ -64,7 +77,6 @@ export class ItemsService {
       await updateDoc(itemsDocRef, { name })
       // this.router.navigate(['/'])
     } catch (error: any) {
-      console.log('error updating item -> ', error)
       this.alertService.showAlert(`${error.code} - ${error.message}`)
     }
     this.spinnerService.stopLoading()
@@ -76,7 +88,6 @@ export class ItemsService {
       const itemsDocRef = doc(this.firestore, 'items', uid)
       await updateDoc(itemsDocRef, { images })
     } catch (error: any) {
-      console.log('error updating item -> ', error)
       this.alertService.showAlert(`${error.code} - ${error.message}`)
     }
     this.spinnerService.stopLoading()

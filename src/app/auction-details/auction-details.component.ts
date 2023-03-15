@@ -24,7 +24,7 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
   auction: Auction = {} as Auction
   remainingTime: number = 0
   isActive: boolean = false
-  dueDate: number = 0
+  expiresOn: number = 0
   countdown!: ReturnType<typeof setInterval> | null
   items: Item[] = []
   itemsSubscription!: Subscription
@@ -55,6 +55,7 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
   initArticleForm(): void {
     this.auctionForm = this.formBuilder.group({
       startPrice: [this.auction?.startPrice || '', [Validators.required]],
+      increasePrice: [this.auction?.increasePrice, [Validators.required]],
     })
   }
 
@@ -64,10 +65,10 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
         this.auction = { ...doc.data(), uid: doc.id } as Auction
         this.initArticleForm()
         if (!this.itemsSubscription) this.initItemsSubscription()
-        if (this.isActive && !this.auction.dueDate) {
+        if (this.isActive && !this.auction.startedAt) {
           this.stopCountdown()
-        } else if (this.auction.dueDate && !this.countdown && ((this.auction.dueDate.seconds + 180) > Timestamp.now().seconds)) {
-          this.dueDate = (this.auction.dueDate.seconds + 180) * 1000
+        } else if (this.auction.startedAt && !this.countdown && ((this.auction.startedAt.seconds + 180) > Timestamp.now().seconds)) {
+          this.expiresOn = (this.auction.startedAt.seconds + 180) * 1000
           this.startCountdown()
         }
       } else {
@@ -80,21 +81,19 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
   }
 
   initItemsSubscription(): void {
-    console.log('initialize items subscription ')
     this.itemsSubscription = this.itemsService
       .getItems(this.auction.uid)
       .subscribe(items => {
+        console.log('items changed ', items)
         this.items = items
-        console.log('items changed ')
       })
   }
 
   startCountdown(): void {
-    console.log('Start countdown')
     this.isActive = true
     this.countdown = setInterval(() => {
       const now = Timestamp.now().seconds * 1000
-      const timeLeft = this.dueDate - now
+      const timeLeft = this.expiresOn - now
       if (timeLeft < 0)
         this.stopCountdown()
       else
@@ -103,7 +102,6 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
   }
 
   stopCountdown(): void {
-    console.log('Stop countdown')
     this.countdown && clearInterval(this.countdown)
     this.countdown = null
     this.remainingTime = 0
@@ -122,12 +120,9 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
     this.auctionsService.bid(this.auction)
   }
 
-  // showServerTimestamp(): void {
-  //   console.log('serverTimestamp -> ', Timestamp.fromDate(new Date()))
-  // }
-
   startAuction(): void {
-    this.auctionsService.startAuction(this.auction.uid, this.auctionForm.value.startPrice)
+    const { startPrice, increasePrice } = this.auctionForm.value
+    this.auctionsService.startAuction(this.auction.uid, startPrice, increasePrice)
   }
 
   stopAuction(): void {
@@ -158,7 +153,7 @@ export class AuctionDetailsComponent implements OnInit, OnDestroy {
 
     articleDialogRef.afterClosed().subscribe(result => {
       if (result) {
-        console.log('setted item -> ', item)
+        console.log('setted item ---> ', item)
         this.auctionsService.setAuctionItem(this.auction.uid, item)
       }
     })
@@ -175,6 +170,6 @@ export class SelectArticleDialog {
     public dialogRef: MatDialogRef<SelectArticleDialog>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
-    // console.log('Start auction with this article -> ', data)
+    // Start auction with this article -> ', data
   }
 }

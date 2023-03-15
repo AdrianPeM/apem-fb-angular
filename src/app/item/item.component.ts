@@ -54,7 +54,6 @@ export class ItemComponent implements OnInit {
   }
 
   async saveItemForm(closeDialog: boolean = true): Promise<void> {
-    console.log('save item')
     const data = { ...this.itemForm.value, uid: this.item.uid }
     if (this.item.uid) {
       await this.itemsService.updateItem(data)
